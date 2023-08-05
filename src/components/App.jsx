@@ -1,40 +1,36 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import FilterContacts from './FilterContacts/FilterContacts';
 import styles from './App.module.css';
 
-class App extends Component {
-  state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  };
+const App = () => {
+  const storedContacts = localStorage.getItem('contacts');
+  const initialContacts = storedContacts
+    ? JSON.parse(storedContacts)
+    : [
+        { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+        { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+        { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+        { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+      ];
 
-  componentDidMount() {
-    // Завантаження контактів з localStorage при завантаженні застосунку
+  const [contacts, setContacts] = useState(initialContacts);
+  const [filter, setFilter] = useState('');
+
+  useEffect(() => {
     const storedContacts = localStorage.getItem('contacts');
     if (storedContacts) {
-      this.setState({ contacts: JSON.parse(storedContacts) });
+      setContacts(JSON.parse(storedContacts));
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevState) {
-    // Зберігання контактів у localStorage під час оновлення стану
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  addContact = (name, number) => {
-    // Перевірка, чи існує контакт з таким самим іменем
-    const existingContact = this.state.contacts.find(
-      contact => contact.name === name
-    );
+  const addContact = (name, number) => {
+    const existingContact = contacts.find(contact => contact.name === name);
 
     if (existingContact) {
       alert(`Contact with name ${name} is already in contacts.`);
@@ -44,42 +40,35 @@ class App extends Component {
         name: name,
         number: number,
       };
-      this.setState(prevState => ({
-        contacts: [...prevState.contacts, newContact],
-      }));
+      setContacts(prevContacts => [...prevContacts, newContact]);
     }
   };
 
-  deleteContact = id => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== id),
-    }));
-  };
-
-  handleFilterChange = event => {
-    this.setState({ filter: event.target.value });
-  };
-
-  getFilteredContacts = () => {
-    const { contacts, filter } = this.state;
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
+  const deleteContact = id => {
+    setContacts(prevContacts =>
+      prevContacts.filter(contact => contact.id !== id)
     );
   };
 
-  render() {
-    return (
-      <div className={styles.container}>
-        <h1>Phonebook</h1>
-        <ContactForm addContact={this.addContact} />
-        <h2>Contacts</h2>
-        <FilterContacts
-          contacts={this.state.contacts}
-          deleteContact={this.deleteContact}
-        />
-      </div>
-    );
-  }
-}
+  const handleFilterChange = event => {
+    setFilter(event.target.value);
+  };
+
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  return (
+    <div className={styles.container}>
+      <h1>Phonebook</h1>
+      <ContactForm addContact={addContact} />
+      <h2>Contacts</h2>
+      <FilterContacts
+        contacts={filteredContacts}
+        deleteContact={deleteContact}
+      />
+    </div>
+  );
+};
 
 export default App;
