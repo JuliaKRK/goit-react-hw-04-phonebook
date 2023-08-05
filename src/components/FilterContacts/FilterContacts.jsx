@@ -6,9 +6,9 @@ import styles from './FilterContacts.module.css';
 const FilterContacts = ({ contacts, deleteContact }) => {
   const [filter, setFilter] = useState('');
 
-  const handleFilterChange = event => {
-    setFilter(event.target.value);
-  };
+  // const handleFilterChange = event => {
+  //   setFilter(event.target.value);
+  // };
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
@@ -22,7 +22,7 @@ const FilterContacts = ({ contacts, deleteContact }) => {
           className={styles.filterInput}
           type="text"
           value={filter}
-          onChange={handleFilterChange}
+          onChange={event => setFilter(event.target.value)}
           placeholder="Find contact by name"
         />
       </div>
