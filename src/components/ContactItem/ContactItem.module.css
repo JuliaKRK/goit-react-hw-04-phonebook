@@ -1,0 +1,33 @@
+.list {
+  padding: 0;
+}
+
+/* Стилі для елемента списку контактів */
+.item {
+  width: 300px;
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  border: 1px solid #043b04;
+  border-radius: 5px;
+  background-color: #aaeeaa;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item button {
+  padding: 5px 10px;
+  margin: 12px;
+  font-weight: bold;
+  background-color: hsl(6, 49%, 92%);
+  color: rgb(5, 59, 3);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.item button:hover,
+.item button:focus {
+  background-color: #e28080;
+}
